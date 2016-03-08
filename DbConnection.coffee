@@ -13,6 +13,7 @@ class DbConnection
         yield @_initDatabase @config.databaseName
         yield @_initCollections()
         yield @_initEdgeCollections()
+        yield @_initGraph()
 
     _initDatabase: Promise.coroutine (name) ->
         dbNames = yield @db.listUserDatabases()
@@ -41,6 +42,10 @@ class DbConnection
         collection = @db.edgeCollection name
         @collections[name] = collection
         yield collection.create()
+
+    _initGraph: Promise.coroutine ->
+        graph = @db.graph @config.graphName
+        yield graph.create(@config.graph)
 
     createPo: Promise.coroutine (poData) ->
         yield @collections.po.save poData
