@@ -1,10 +1,6 @@
 Promise = require 'bluebird'
 DbConnection = require './DbConnection'
-
-relationTypes =
-    PARENT_CHILD: 'parent-child'
-    REFERENCE: 'reference'
-    LINK: 'link'
+{createTree} = require './create-data'
 
 config =
     serverAddress: 'http://127.0.0.1:8529'
@@ -23,6 +19,11 @@ initialize = Promise.coroutine ->
     child = yield dbConnection.createPo {name: 'child'}
 
     yield dbConnection.createRelation {type: 'parent-child'}, root, child
+
+    yield createTree dbConnection, 'A', 5, 4
+
+
+
 
 initialize()
 
