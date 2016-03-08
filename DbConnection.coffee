@@ -1,22 +1,43 @@
+Promise = require 'bluebird'
+Database = require('arangojs').Database
+
+config =
+    serverAddress: 'http://127.0.0.1:8529'
+    databaseName: 'hackathon'
+    collections: [
+        'po'
+        'relation'
+    ]
+
 class DbConnection
+    constructor(@config) ->
 
-  constructor(@config) ->
+    openDatabase: ->
+        @db = new Database @config.serverAddress #" #'http://127.0.0.1:8529'
 
-  openDatabase: ->
-    @db =
+    initializeDatabase: Promise.coroutine ->
+        @openDatabase()
+        @_initDatabase @config.databaseName
+        @_initCollections @config.collections
 
-  closeDatabase: ->
 
-  createDatabase: ->
+    _initDatabase: (name) ->
+        dbNames = yield @db.listUserDatabases()
+        if name in dbNames
+            console.log 'Dropping database ' + name
+            yield @db.dropDatabase name
 
-  createCollection: (name) ->
+        console.log 'Creating database ' + name
+        yield @db.createDatabase name
 
-  createCollection: (name) ->
+    _initCollections: (collections) ->
+        for collection in collections
+            @_initCollection collection
 
-  createDocument: (document) ->
+    _initCollection: (name) ->
+        collection = db.collection name
+        collection.create()
 
-  createCollections: ->
-    @poCollection =
-    @parentChildCollection =
+    # createDocument: (document) ->
 
-  createPo: ->
+
