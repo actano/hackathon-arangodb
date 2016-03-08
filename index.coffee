@@ -27,6 +27,7 @@ initialize = Promise.coroutine ->
     dbConnection = new DbConnection config
     yield dbConnection.initializeDatabase()
     yield createTree dbConnection, 'A', 5, 4
+    console.log yield dbConnection.loadPoByName('A')
 
 initialize()
 

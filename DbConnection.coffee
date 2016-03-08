@@ -53,12 +53,19 @@ class DbConnection
     createRelation: Promise.coroutine (relationData, from, to) ->
         yield @collections.relation.save relationData, from, to
 
+    loadPos: Promise.coroutine ->
+        (yield @collections.po.all())._result
+
+    loadPoByName: Promise.coroutine (name) ->
+        (yield @collections.po.byExample(name: name))._result
 
 
 
 
 
-    # createDocument: (document) ->
+
+
+# createDocument: (document) ->
 
 module.exports = DbConnection
 
