@@ -1,0 +1,15 @@
+{
+  "name": "hackathon-arangodb",
+  "version": "1.0.0",
+  "description": "Hackathon test of arango",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/actano/hackathon-arangodb.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "arangojs": "^4.3.0"
+  }
+}
