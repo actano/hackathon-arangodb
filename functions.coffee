@@ -12,8 +12,12 @@ module.exports = {
 
         console.log 'Creating database ' + name
         yield db.createDatabase name
+
+    initCollection: (name) ->
+        collection = db.collection name
+        collection.create()
+
 #
-#createCollection (name)
 #createEdgeCollection (name)
 #
 #createDocument (object)
