@@ -12,6 +12,7 @@ class DbConnection
         @openDatabase()
         yield @_initDatabase @config.databaseName
         yield @_initCollections()
+        yield @_initEdgeCollections()
 
     _initDatabase: Promise.coroutine (name) ->
         dbNames = yield @db.listUserDatabases()
@@ -31,6 +32,22 @@ class DbConnection
         collection = @db.collection name
         @collections[name] = collection
         yield collection.create()
+
+    _initEdgeCollections: Promise.coroutine ->
+        for collection in @config.edgeCollections
+            yield @_initEdgeCollection collection
+
+    _initEdgeCollection: Promise.coroutine (name) ->
+        collection = @db.edgeCollection name
+        @collections[name] = collection
+        yield collection.create()
+
+    createPo: Promise.coroutine (poData) ->
+        yield @collections.po.save poData
+
+    createRelation: Promise.coroutine (relationData, from, to) ->
+        yield @collections.relation.save relationData, from, to
+
 
 
 
