@@ -4,7 +4,8 @@
   "description": "Hackathon test of arango",
   "main": "index.js",
   "scripts": {
-    "start": "coffee index.coffee"
+    "start": "coffee index.coffee",
+    "init-db": "coffee init-db.coffee"
   },
   "repository": {
     "type": "git",
