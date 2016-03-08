@@ -1,4 +1,17 @@
-functions = require './functions'
+Promise = require 'bluebird'
+DbConnection = require './DbConnection'
 
-functions.initDatabase 'hackathon'
-functions.initCollection 'planning-objects'
+config =
+    serverAddress: 'http://127.0.0.1:8529'
+    databaseName: 'hackathon'
+    collections: [
+        'po'
+    ]
+    edgeCollections: [
+        'relation'
+    ]
+
+dbConnection = new DbConnection config
+
+dbConnection.initializeDatabase()
+
