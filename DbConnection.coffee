@@ -1,5 +1,6 @@
 Promise = require 'bluebird'
 Database = require('arangojs').Database
+PoModel = require './PoModel'
 
 class DbConnection
     constructor: (@config) ->
@@ -53,11 +54,41 @@ class DbConnection
     createRelation: Promise.coroutine (relationData, from, to) ->
         yield @collections.relation.save relationData, from, to
 
-    loadPos: Promise.coroutine ->
+    loadAllPOs: Promise.coroutine ->
         (yield @collections.po.all())._result
 
     loadPoByName: Promise.coroutine (name) ->
-        (yield @collections.po.byExample(name: name))._result
+        dbModel = (yield @collections.po.byExample(name: name))._result[0]
+        return new PoModel dbModel
+
+    # never loads more than 1001 objects
+    loadPoSubtree: Promise.coroutine (po) ->
+        query = "FOR v, e IN 1..100000 OUTBOUND '#{po.id()}' GRAPH '#{@config.graphName}' RETURN {po: v, relation: e}"
+        (yield @db.query query)._result
+
+    # dirty
+    loadTree: Promise.coroutine (rootName) ->
+        poCollection = {}
+        rootPo = yield @loadPoByName rootName
+        poCollection[rootPo.id()] = rootPo
+
+        edgeChildList = yield @loadPoSubtree rootPo
+        for {po, relation} in edgeChildList
+            poModel = new PoModel po
+            poCollection[poModel.id()] = poModel
+            parent = poCollection[relation._from]
+            relation.po = poModel
+            parent.addRelation relation
+            poModel.setParent parent
+
+        return poCollection
+
+
+
+
+
+
+
 
 
 
